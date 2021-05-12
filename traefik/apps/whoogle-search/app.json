@@ -1,0 +1,129 @@
+{
+  "name": "Whoogle Search",
+  "description": "A lightweight, privacy-oriented, containerized Google search proxy for desktop/mobile that removes Javascript, AMP links, tracking, and ads/sponsored content",
+  "repository": "https://github.com/benbusby/whoogle-search",
+  "logo": "https://raw.githubusercontent.com/benbusby/whoogle-search/master/app/static/img/favicon/ms-icon-150x150.png",
+  "keywords": [
+    "search",
+    "metasearch",
+    "flask",
+    "docker",
+    "heroku",
+    "adblock",
+    "degoogle",
+    "privacy"
+  ],
+  "stack": "container",
+  "env": {
+    "WHOOGLE_USER": {
+      "description": "The username for basic auth. WHOOGLE_PASS must also be set if used. Leave empty to disable.",
+      "value": "",
+      "required": false
+    },
+    "WHOOGLE_PASS": {
+      "description": "The password for basic auth. WHOOGLE_USER must also be set if used. Leave empty to disable.",
+      "value": "",
+      "required": false
+    },
+    "WHOOGLE_PROXY_USER": {
+      "description": "The username of the proxy server. Leave empty to disable.",
+      "value": "",
+      "required": false
+    },
+    "WHOOGLE_PROXY_PASS": {
+      "description": "The password of the proxy server. Leave empty to disable.",
+      "value": "",
+      "required": false
+    },
+    "WHOOGLE_PROXY_TYPE": {
+      "description": "The type of the proxy server. For example \"socks5\". Leave empty to disable.",
+      "value": "",
+      "required": false
+    },
+    "WHOOGLE_PROXY_LOC": {
+      "description": "The location of the proxy server (host or ip). Leave empty to disable.",
+      "value": "",
+      "required": false
+    },
+    "WHOOGLE_ALT_TW": {
+      "description": "The site to use as a replacement for twitter.com when site alternatives are enabled in the config.",
+      "value": "nitter.net",
+      "required": false
+    },
+    "WHOOGLE_ALT_YT": {
+      "description": "The site to use as a replacement for youtube.com when site alternatives are enabled in the config.",
+      "value": "invidious.snopyta.org",
+      "required": false
+    },
+    "WHOOGLE_ALT_IG": {
+      "description": "The site to use as a replacement for instagram.com when site alternatives are enabled in the config.",
+      "value": "bibliogram.art/u",
+      "required": false
+    },
+    "WHOOGLE_ALT_RD": {
+      "description": "The site to use as a replacement for reddit.com when site alternatives are enabled in the config.",
+      "value": "libredd.it",
+      "required": false
+    },
+    "WHOOGLE_CONFIG_COUNTRY": {
+        "description": "[CONFIG] The country to use for restricting search results (use values from https://raw.githubusercontent.com/benbusby/whoogle-search/develop/app/static/settings/countries.json)",
+        "value": "",
+        "required": false
+    },
+    "WHOOGLE_CONFIG_LANGUAGE": {
+        "description": "[CONFIG] The language to use for the interface (use values from https://raw.githubusercontent.com/benbusby/whoogle-search/develop/app/static/settings/languages.json)",
+        "value": "",
+        "required": false
+    },
+    "WHOOGLE_CONFIG_SEARCH_LANGUAGE": {
+        "description": "[CONFIG] The language to use for search results (use values from https://raw.githubusercontent.com/benbusby/whoogle-search/develop/app/static/settings/languages.json)",
+        "value": "",
+        "required": false
+    },
+    "WHOOGLE_CONFIG_DISABLE": {
+        "description": "[CONFIG] Disable ability for client to change config (set to 1 or leave blank)",
+        "value": "",
+        "required": false
+    },
+    "WHOOGLE_CONFIG_BLOCK": {
+        "description": "[CONFIG] Block websites from search results (comma-separated list)",
+        "value": "",
+        "required": false
+    },
+    "WHOOGLE_CONFIG_DARK": {
+        "description": "[CONFIG] Enable dark mode (set to 1 or leave blank)",
+        "value": "",
+        "required": false
+    },
+    "WHOOGLE_CONFIG_SAFE": {
+        "description": "[CONFIG] Use safe mode for searches (set to 1 or leave blank)",
+        "value": "",
+        "required": false
+    },
+    "WHOOGLE_CONFIG_ALTS": {
+        "description": "[CONFIG] Use social media alternatives (set to 1 or leave blank)",
+        "value": "",
+        "required": false
+    },
+    "WHOOGLE_CONFIG_TOR": {
+        "description": "[CONFIG] Use Tor, if available (set to 1 or leave blank)",
+        "value": "",
+        "required": false
+    },
+    "WHOOGLE_CONFIG_NEW_TAB": {
+        "description": "[CONFIG] Always open results in new tab (set to 1 or leave blank)",
+        "value": "",
+        "required": false
+    },
+    "WHOOGLE_CONFIG_GET_ONLY": {
+        "description": "[CONFIG] Search using GET requests only (set to 1 or leave blank)",
+        "value": "",
+        "required": false
+    },
+    "WHOOGLE_CONFIG_STYLE": {
+        "description": "[CONFIG] Custom CSS styling (paste in CSS or leave blank)",
+        "value": "",
+        "required": false
+    }
+  }
+}

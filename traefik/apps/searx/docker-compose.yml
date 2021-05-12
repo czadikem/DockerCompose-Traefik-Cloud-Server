@@ -1,0 +1,95 @@
+version: '3.7'
+services:
+  searx:
+    container_name: searx
+    image: searx/searx:latest
+    restart: always
+    networks:
+      - backend
+    command: ${SEARX_COMMAND:-}
+    volumes:
+      - ./searx:/etc/searx:rw
+    logging:
+      driver: none
+    environment:
+      - BIND_ADDRESS=0.0.0.0:8080
+      - BASE_URL=https://${SEARX_HOSTNAME}/
+      - MORTY_URL=https://${SEARX_HOSTNAME}/morty/
+      - MORTY_KEY=${MORTY_KEY}
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+      - DAC_OVERRIDE
+  filtron:
+    container_name: filtron
+    image: dalf/filtron
+    restart: always
+    networks: 
+      - proxy
+      - backend
+    ports:
+      - "127.0.0.1:4041:4041"
+    command: -listen 0.0.0.0:4040 -api 0.0.0.0:4041 -target searx:8080
+    volumes:
+      - ./rules.json:/etc/filtron/rules.json:rw
+    logging:
+      driver: none
+    read_only: true
+    cap_drop:
+      - ALL
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+      # Filtron Router
+      - "traefik.http.routers.searx-filtron.rule=Host(`${SEARX_HOSTNAME}`)"
+      - "traefik.http.routers.searx-filtron.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.searx-filtron.middlewares=searx-dynamic-headers,searx-csp-headers,searx-api-headers"
+      - "traefik.http.routers.searx-filtron.entrypoints=websecure"
+      # Filtron Static file Router
+      - "traefik.http.routers.searx-static.rule=Host(`${SEARX_HOSTNAME}`) && PathPrefix(`/static`)"
+      - "traefik.http.routers.searx-static.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.searx-static.entrypoints=websecure"
+      - "traefik.http.routers.searx-static.middlewares=searx-static-headers,searx-csp-headers"
+      - "traefik.http.services.filtron-searx-traefik-docker.loadbalancer.server.port=4040"
+      # Header middleware for dynamic (not static) files
+      - "traefik.http.middlewares.searx-dynamic-headers.headers.customResponseHeaders.Cache-Control=no-cache, no-store"
+      - "traefik.http.middlewares.searx-dynamic-headers.headers.customResponseHeaders.Pragma=no-cache"
+      # Header middleware for searx API
+      - "traefik.http.middlewares.searx-api-headers.headers.accessControlAllowMethods=GET, OPTIONS"
+      - "traefik.http.middlewares.searx-api-headers.headers.accessControlAllowOriginList=*"
+      # Header searx CSP
+      - "traefik.http.middlewares.searx-csp-headers.headers.contentSecurityPolicy=upgrade-insecure-requests; default-src 'none'; script-src 'self'; object-src 'self'; style-src 'self' https://searx.silkky.cloud/search; form-action 'self'; font-src 'self'; frame-ancestors 'self'; base-uri 'self'; img-src * data: https://*.tile.openstreetmap.org; frame-src https://www.youtube-nocookie.com https://player.vimeo.com https://www.dailymotion.com https://www.deezer.com https://www.mixcloud.com https://w.soundcloud.com https://embed.spotify.com"
+      # Header middleware for static files
+      - "traefik.http.middlewares.searx-static-headers.headers.customResponseHeaders.Cache-Control=public, max-age=31536000"
+  morty:
+    container_name: morty
+    image: dalf/morty
+    restart: always
+    networks:
+      - proxy
+      - backend
+    command: -timeout 6 -ipv6
+    environment:
+      - MORTY_KEY=${MORTY_KEY}
+      - MORTY_ADDRESS=0.0.0.0:3000
+    logging:
+      driver: none
+    read_only: true
+    cap_drop:
+      - ALL
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+      - "traefik.http.routers.searx-morty.rule=Host(`${SEARX_HOSTNAME}`) && PathPrefix(`/morty`)"
+      - "traefik.http.routers.searx-morty.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.searx-morty.entrypoints=websecure"
+      - "traefik.http.routers.searx-morty.middlewares=searx-dynamic-headers,searx-morty-csp-headers"
+      # Header middleware for morty CSP
+      - "traefik.http.middlewares.searx-morty-csp-headers.headers.contentSecurityPolicy=default-src 'none'; style-src 'self' 'unsafe-inline'; form-action 'self'; frame-ancestors 'self'; base-uri 'self'; img-src 'self' data:; font-src 'self'; frame-src 'self'"
+networks:
+  proxy:
+    external: true
+  backend:
