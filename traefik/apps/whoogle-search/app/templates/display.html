@@ -1,0 +1,29 @@
+<html>
+    <head>
+        <link rel="shortcut icon" href="static/img/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="static/img/favicon.ico" type="image/x-icon">
+        <link rel="search" href="opensearch.xml" type="application/opensearchdescription+xml" title="Whoogle Search">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="referrer" content="no-referrer">
+        <link rel="stylesheet" href="static/css/input.css">
+        <link rel="stylesheet" href="static/css/search.css">
+        <link rel="stylesheet" href="static/css/variables.css">
+        <link rel="stylesheet" href="static/css/header.css">
+        <link rel="stylesheet" href="static/css/{{ 'dark' if config.dark else 'light' }}-theme.css"/>
+        <style>{{ config.style }}</style>
+        <title>{{ query }} - Whoogle Search</title>
+    </head>
+    <body>
+    {{ search_header|safe }}
+    {{ response|safe }}
+    </body>
+    <footer>
+        <p style="color: {{ 'var(--whoogle-dark-text)' if config.dark else 'var(--whoogle-text)' }};">
+            Whoogle Search v{{ version_number }} ||
+            <a id="gh-link" href="https://github.com/benbusby/whoogle-search">View on GitHub</a>
+        </p>
+    </footer>
+	<script src="static/js/autocomplete.js"></script>
+	<script src="static/js/utils.js"></script>
+	<script src="static/js/keyboard.js"></script>
+</html>
